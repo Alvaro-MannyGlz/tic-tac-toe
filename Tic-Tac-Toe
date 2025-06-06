@@ -1,4 +1,5 @@
 # Use the provided images and a Python GUI library of your choice to create a simple Tic-tac-toe game.
-
 # Tkinter library
 
+from tkinter import *
+print("Hello World!")

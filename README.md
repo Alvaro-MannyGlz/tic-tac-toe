@@ -1,4 +1,4 @@
-# tic-tac-toe
+# Tic-Tac-Toe
 First Assignment for my Artificial Intelligence class 
 ---
 

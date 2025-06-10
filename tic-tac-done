@@ -7,28 +7,52 @@ root = tk.Tk()
 root.title("Tic-Tac-Toe")
 curr_player = "X"
 board = [["" for _ in range(3)] for _ in range(3)] # 3x3 Board size
-# game_buttons = [] will be used to store the cell objects
+game_buttons = [] # store cell objects
+
+# Win and Tie Conditions
+
+def check_win():
+    # Horizontal win
+    for row in range(3):
+        if board[row][0] == board[row][1] == board[row][2] != "":
+            return True
+    # Vertical win
+    for col in range(3):
+        if board[col][0] == board[col][1] == board[col][2] != "":
+            return True
+    # Diagonal 
+    if board[0][0] == board[1][1] == board[2][2] != "":
+        return True
+    if board[0][2] == board[1][1] == board[2][0] != "":
+        return True
+    return False
+
+def check_tie():
+    for row in range(3):
+        for col in range(3):
+            if board[row][col] == "":
+                return False
+    return True
 
 # Cell Class
 def __init__(self, master, row, col):
     super().__init__(master, text="", font=("Arial", 40), width=4, height=2)
     self.row = row
     self.col = col
-    self.config(command=self.on_click) # Cell will handle click
+    self.bind("<Button-1>", self.flip) # Cell will handle click
     
-    def on_click(self):
+    def flip(self, event):
         global curr_player
 
         # Cells are empty
         if board[self.row][self.col] == "":
-            # Player will change to X or O
+            # Cell will change from blank to X or O
             board[self.row][self.col] = curr_player
+            self.config(text=curr_player)
 
-# Button clicked function
-       
-# Win?
-
-# Board is Full (No one won)
+            if check_win():
+                messagebox.showinfo("Game Over", f"Player {curr_player} wins!") 
+                reset_game()      
 
 # Build our buttons
 buttons = []

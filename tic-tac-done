@@ -1,15 +1,17 @@
 # Use the provided images and a Python GUI library of your choice to create a simple Tic-tac-toe game.
 # Tkinter library
-
 import tkinter as tk
 
 root = tk.Tk()
 root.title("Tic-Tac-Toe")
-root.resizable(False, False)
+
+frame = tk.Frame(root)
+label = tk.Label(frame, text=curr_player+)
+
 # class Cell(tk.LabelO):
-    
+ 
 # Button clicked function
-       
+
 # Win?
 
 # Board is Full (No one won)

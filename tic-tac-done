@@ -2,9 +2,8 @@
 # Tkinter library
 
 import tkinter as tk
+from tkinter import messagebox
 
-root = tk.Tk()
-root.title("Tic-Tac-Toe")
 curr_player = "X"
 board = [["" for _ in range(3)] for _ in range(3)] # 3x3 Board size
 game_buttons = [] # store cell objects
@@ -18,7 +17,7 @@ def check_win():
             return True
     # Vertical win
     for col in range(3):
-        if board[col][0] == board[col][1] == board[col][2] != "":
+        if board[0][col] == board[1][col] == board[2][col] != "":
             return True
     # Diagonal 
     if board[0][0] == board[1][1] == board[2][2] != "":
@@ -28,41 +27,64 @@ def check_win():
     return False
 
 def check_tie():
+    # If any cell is empty, it's not a tie
     for row in range(3):
         for col in range(3):
             if board[row][col] == "":
                 return False
     return True
 
-# Cell Class
-def __init__(self, master, row, col):
-    super().__init__(master, text="", font=("Arial", 40), width=4, height=2)
-    self.row = row
-    self.col = col
-    self.bind("<Button-1>", self.flip) # Cell will handle click
-    
-    def flip(self, event):
-        global curr_player
+# Again? (Reset the game)
+def reset_game():
+    global curr_player, board
+    curr_player = "X"
+    for row in range(3):
+        for col in range(3):
+            board[row][col] = ""
+            game_buttons[row][col].config(text="", state=tk.NORMAL) # Clear text and enable
 
-        # Cells are empty
-        if board[self.row][self.col] == "":
-            # Cell will change from blank to X or O
-            board[self.row][self.col] = curr_player
-            self.config(text=curr_player)
+# Handle a button click for a cell
+def button_click(row, col):
+    global curr_player
+    # Only allow move if cell is empty
+    if board[row][col] == "":
+        board[row][col] = curr_player
+        game_buttons[row][col].config(text=curr_player)
+        # Check for win or tie after every move
+        if check_win():
+            messagebox.showinfo("Game Over", f"Player {curr_player} wins!")
+            # Disable all buttons after win
+            for r in range(3):
+                for c in range(3):
+                    game_buttons[r][c].config(state=tk.DISABLED)
+        elif check_tie():
+            messagebox.showinfo("Game Over", "It's a tie!")
+            # Disable all buttons after tie
+            for r in range(3):
+                for c in range(3):
+                    game_buttons[r][c].config(state=tk.DISABLED)
+        else:
+            # Switch to the other player
+            curr_player = "O" if curr_player == "X" else "X"
 
-            if check_win():
-                messagebox.showinfo("Game Over", f"Player {curr_player} wins!") 
-                reset_game()      
+# Tkinter window setup
+root = tk.Tk()
+root.title("Tic-Tac-Toe")
 
-# Build our buttons
-buttons = []
+# Build our buttons (3x3 grid)
 for row in range(3):
     button_row = []
     for col in range(3):
-        button = tk.Button(root, text="", font=("Arial", 20))
+        # Each button calls button_click with its row and col
+        button = tk.Button(root, text="", font=("Arial", 20), width=5, height=2,
+                           command=lambda r=row, c=col: button_click(r, c))
         button.grid(row=row, column=col, padx=5, pady=10) # Adjusting where buttons are located 
         button_row.append(button)
-    buttons.append(button_row)
+    game_buttons.append(button_row)
+
+# Add a reset button below the grid
+reset_button = tk.Button(root, text="Reset Game", font=("Arial", 16), command=reset_game)
+reset_button.grid(row=3, column=0, columnspan=3, pady=10)
 
 # Run the whole thing
 root.mainloop()
